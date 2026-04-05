@@ -523,7 +523,7 @@ export default function TravelPlan({ plan, onRegenerate }) {
           style={{ color: "#92400e" }}
         >
           <span style={{ flexShrink: 0 }}>ℹ️</span>
-          このプランはAIが生成した提案です。実際の営業時間・定休日・料金・予約状況は必ず事前にご確認ください。
+          営業時間・料金は事前にご確認ください。
         </p>
       </div>
     </div>

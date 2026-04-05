@@ -152,7 +152,7 @@ export default function SearchForm({ onGenerate, loading, remaining, isLimitReac
               className="block text-xs font-normal mt-0.5"
               style={{ color: "#94a3b8" }}
             >
-              条件を入力してAIが最適プランを生成します
+              行き先・日数・スタイルを入れるだけ
             </span>
           </span>
           <div style={{ marginLeft: "auto" }}>
