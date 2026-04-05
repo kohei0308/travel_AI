@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
 import SearchForm from "./components/SearchForm";
 import TravelPlan from "./components/TravelPlan";
+import AuthModal from "./components/AuthModal";
 import { useUsageLimit } from "./hooks/useUsageLimit";
+import { supabase } from "./supabase";
 
 export default function App() {
   const [plan, setPlan] = useState(null);
@@ -10,6 +12,18 @@ export default function App() {
   const [error, setError] = useState(null);
   const [lastConditions, setLastConditions] = useState(null);
   const { remaining, isLimitReached, incrementUsage } = useUsageLimit();
+  const [user, setUser] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const generatePlan = async (conditions) => {
     if (isLimitReached) {
@@ -165,6 +179,28 @@ export default function App() {
               "linear-gradient(90deg, transparent, #f59e0b, transparent)",
           }}
         />
+
+        {/* 認証ボタン */}
+        <div className="absolute top-4 right-4">
+          {user ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "0.8rem", color: "#fcd34d" }}>{user.email}</span>
+              <button
+                onClick={() => supabase.auth.signOut()}
+                style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#e2e8f0", borderRadius: "8px", padding: "6px 12px", fontSize: "0.8rem", cursor: "pointer", fontFamily: "inherit" }}
+              >
+                ログアウト
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowAuthModal(true)}
+              style={{ background: "rgba(245,158,11,0.2)", border: "1px solid rgba(245,158,11,0.4)", color: "#fcd34d", borderRadius: "8px", padding: "6px 16px", fontSize: "0.85rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}
+            >
+              ログイン / 登録
+            </button>
+          )}
+        </div>
       </header>
 
       {/* メインコンテンツ */}
@@ -212,6 +248,8 @@ export default function App() {
           <TravelPlan plan={plan} onRegenerate={handleRegenerate} />
         )}
       </main>
+
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
 
       {/* フッター */}
       <footer
