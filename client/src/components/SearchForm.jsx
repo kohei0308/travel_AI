@@ -101,7 +101,7 @@ function CardButton({ selected, disabled, onClick, icon, label, sub, type = "but
   );
 }
 
-export default function SearchForm({ onGenerate, loading }) {
+export default function SearchForm({ onGenerate, loading, remaining, isLimitReached }) {
   const [destination, setDestination] = useState("");
   const [days, setDays] = useState(2);
   const [style, setStyle] = useState("balanced");
@@ -155,6 +155,17 @@ export default function SearchForm({ onGenerate, loading }) {
               条件を入力してAIが最適プランを生成します
             </span>
           </span>
+          <div style={{ marginLeft: "auto" }}>
+            {isLimitReached ? (
+              <span style={{ fontSize: "0.75rem", background: "#fee2e2", color: "#dc2626", padding: "4px 10px", borderRadius: "999px", fontWeight: 600 }}>
+                今月の上限に達しました
+              </span>
+            ) : (
+              <span style={{ fontSize: "0.75rem", background: "rgba(245,158,11,0.2)", color: "#fcd34d", padding: "4px 10px", borderRadius: "999px", fontWeight: 600 }}>
+                残り {remaining} 回
+              </span>
+            )}
+          </div>
         </h2>
       </div>
 
@@ -332,9 +343,9 @@ export default function SearchForm({ onGenerate, loading }) {
         {/* 生成ボタン */}
         <button
           type="submit"
-          disabled={loading || !isValid}
+          disabled={loading || !isValid || isLimitReached}
           style={
-            loading || !isValid
+            loading || !isValid || isLimitReached
               ? {
                   background: "#e2e8f0",
                   color: "#94a3b8",

@@ -40,7 +40,7 @@ claude-opus-4-5 → claude-haiku-4-5 に変更（コスト削減）。
 ### デプロイ
 - GitHub: https://github.com/kohei0308/travel_AI
 - Vercel: https://travel-ai-psi-five.vercel.app/
-- 環境変数: ANTHROPIC_API_KEY を Vercel に設定
+- 環境変数: ANTHROPIC_API_KEY を Vercel に設定（キーは絶対にファイルに書かない）
 
 ### ハマったこと
 - vercel.json の rewrite ルールが `/api/*` も `index.html` に向けてしまいAPIが動かなかった
